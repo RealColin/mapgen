@@ -1,11 +1,20 @@
 pub struct Voronoi {
-    seed: u64,
     square_size: u32,
+    sites: Vec<(u32, u32)>,
 }
 
 impl Voronoi {
     pub fn init(seed: u64, square_size: u32) -> Self {
-        Voronoi { seed, square_size }
+        let mut sites: Vec<(u32, u32)> = Vec::new();
+        for x in 0..square_size {
+            for y in 0..square_size {
+                sites.push((x, y));
+            }
+        }
+
+        // shuffle sites with a random function seeded with seed
+
+        Voronoi { square_size, sites }
     }
 
     /* Get the site nearest to the global position (x, y). This is the cell that the position belongs to. */
@@ -40,6 +49,7 @@ impl Voronoi {
     /* Get the site belonging to the square */
     fn site_at(&self, gx: i64, gy: i64) -> (i64, i64) {
         // TODO implement this function
+        // need asymmetrical 2d hash function for indexing self.sites
 
         (0, 0)
     }
