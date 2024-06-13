@@ -46,11 +46,16 @@ impl Voronoi {
         ((0, 0), (0, 0))
     }
 
+    pub fn gen_image(&self, path: String, size: u32) {
+        // TODO implement this function
+    }
+
     /* Get the site belonging to the square */
     fn site_at(&self, gx: i64, gy: i64) -> (i64, i64) {
-        // TODO implement this function
-        // need asymmetrical 2d hash function for indexing self.sites
+        let index = (3 * gx + 2 * gy) % (self.square_size as i64 * self.square_size as i64);
 
-        (0, 0)
+        let site = *self.sites.get(index as usize).unwrap();
+
+        (site.0 as i64, site.1 as i64)
     }
 }
