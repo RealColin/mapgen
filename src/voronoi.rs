@@ -50,12 +50,25 @@ impl Voronoi {
         // TODO implement this function
     }
 
-    /* Get the site belonging to the square */
+    /* Get the global coords of the site belonging to the square */
     fn site_at(&self, gx: i64, gy: i64) -> (i64, i64) {
-        let index = (3 * gx + 2 * gy) % (self.square_size as i64 * self.square_size as i64);
+        // let index = (3 * gx + 2 * gy) % (self.square_size as i64 * self.square_size as i64);
+        let index = ((53 + Voronoi::hash(gx)) * 53 + Voronoi::hash(gy)) % self.sites.len();
 
-        let site = *self.sites.get(index as usize).unwrap();
+        // the coords in the sites vec are all relative to the square rather than being global coords
+        let local = *self.sites.get(index as usize).unwrap();
 
-        (site.0 as i64, site.1 as i64)
+        // in order to get the global position, we must offset by the distance (in global coords) that the square is from the origin
+        let site = (
+            local.0 as i64 + (gx * self.square_size as i64) as i64,
+            local.1 as i64 + (gy * self.square_size as i64) as i64,
+        );
+
+        site
+    }
+
+    fn hash(num: i64) -> usize {
+        // TODO complete this please
+        0
     }
 }
