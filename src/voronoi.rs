@@ -1,3 +1,8 @@
+use std::collections::HashMap;
+
+use image::{self, GenericImage, Rgb, RgbImage};
+use rand::{rngs::StdRng, seq::SliceRandom, thread_rng, Rng, SeedableRng};
+
 pub struct Voronoi {
     square_size: u32,
     sites: Vec<(u32, u32)>,
@@ -13,6 +18,14 @@ impl Voronoi {
         }
 
         // shuffle sites with a random function seeded with seed
+        let mut a: [u8; 32] = [0; 32];
+        let b = seed.to_be_bytes();
+        for c in 0..8 {
+            a[c] = b[c];
+        }
+
+        let mut rng = StdRng::from_seed(a);
+        sites.shuffle(&mut rng);
 
         Voronoi { square_size, sites }
     }
@@ -28,7 +41,7 @@ impl Voronoi {
 
         for cx in -2..=2 {
             for cy in -2..=2 {
-                let temp = self.site_at(gx, gy);
+                let temp = self.site_at(gx + cx, gy + cy);
                 let dist = ((x - temp.0).pow(2) as f64 + (y - temp.1).pow(2) as f64).sqrt();
 
                 if dist < min_dist {
@@ -47,12 +60,38 @@ impl Voronoi {
     }
 
     pub fn gen_image(&self, path: String, size: u32) {
-        // TODO implement this function
+        let mut image = RgbImage::new(size, size);
+
+        let mut colors: HashMap<(i64, i64), Rgb<u8>> = HashMap::new();
+
+        let seed: [u8; 32] = [0; 32];
+        let mut rng = StdRng::from_seed(seed);
+
+        for x in 0..size {
+            for y in 0..size {
+                let site = self.nearest_site(x as i64, y as i64);
+                if colors.contains_key(&site) {
+                    image.put_pixel(x, y, *colors.get(&site).unwrap());
+                } else {
+                    let r: u8 = rng.gen();
+                    let g: u8 = rng.gen();
+                    let b: u8 = rng.gen();
+
+                    let color = Rgb([r, g, b]);
+                    colors.insert(site, color);
+                    image.put_pixel(x, y, color);
+                }
+            }
+        }
+
+        let _ = image.save(path);
     }
 
     /* Get the global coords of the site belonging to the square */
     fn site_at(&self, gx: i64, gy: i64) -> (i64, i64) {
-        let index = ((53 + Voronoi::hash(gx)) * 53 + Voronoi::hash(gy)) as usize % self.sites.len();
+        // let index = ((53 + Voronoi::hash(gx)) * 53 + Voronoi::hash(gy)) as usize % self.sites.len();
+        let index = ((53 + Voronoi::hash(gx)).wrapping_mul(53) + Voronoi::hash(gy)) as usize
+            % self.sites.len();
 
         // the coords in the sites vec are all relative to the square rather than being global coords
         let local = *self.sites.get(index as usize).unwrap();
