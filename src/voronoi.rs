@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use image::{self, imageops::index_colors, GenericImage, Rgb, RgbImage};
+use image::{self, Rgb, RgbImage};
 use rand::{rngs::StdRng, seq::SliceRandom, Rng, SeedableRng};
 
 pub struct Voronoi {
