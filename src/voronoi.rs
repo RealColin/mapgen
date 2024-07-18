@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
-use image::{self, GenericImage, Rgb, RgbImage};
-use rand::{rngs::StdRng, seq::SliceRandom, thread_rng, Rng, SeedableRng};
+use image::{self, imageops::index_colors, GenericImage, Rgb, RgbImage};
+use rand::{rngs::StdRng, seq::SliceRandom, Rng, SeedableRng};
 
 pub struct Voronoi {
     square_size: u32,
@@ -17,14 +17,14 @@ impl Voronoi {
             }
         }
 
-        // shuffle sites with a random function seeded with seed
-        let mut a: [u8; 32] = [0; 32];
-        let b = seed.to_be_bytes();
-        for c in 0..8 {
-            a[c] = b[c];
+        // Shuffle the sites so that each seed can have a different output image
+        let mut _seed: [u8; 32] = [0; 32];
+        let seed_bytes = seed.to_be_bytes();
+        for index in 0..8 {
+            _seed[index] = seed_bytes[index];
         }
 
-        let mut rng = StdRng::from_seed(a);
+        let mut rng = StdRng::from_seed(_seed);
         sites.shuffle(&mut rng);
 
         Voronoi { square_size, sites }
@@ -52,11 +52,6 @@ impl Voronoi {
         }
 
         site
-    }
-
-    pub fn nearest_two_sites(&self, x: i64, y: i64) -> ((i64, i64), (i64, i64)) {
-        // TODO implement this function
-        ((0, 0), (0, 0))
     }
 
     pub fn gen_image(&self, path: String, size: u32) {

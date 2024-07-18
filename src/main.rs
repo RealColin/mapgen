@@ -3,8 +3,8 @@ mod voronoi;
 use voronoi::Voronoi;
 
 fn main() {
-    let vor = Voronoi::init(0, 16);
-    vor.gen_image(String::from("sigma.png"), 256);
+    let vor = Voronoi::init(3, 64);
+    vor.gen_image(String::from("fortnite.png"), 1024);
 
     println!("Hello, world!");
 }
