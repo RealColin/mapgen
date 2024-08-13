@@ -85,7 +85,9 @@ impl Voronoi {
     /* Get the global coords of the site belonging to the square */
     fn site_at(&self, gx: i64, gy: i64) -> (i64, i64) {
         // let index = ((53 + Voronoi::hash(gx)) * 53 + Voronoi::hash(gy)) as usize % self.sites.len();
-        let index = ((53 + Voronoi::hash(gx)).wrapping_mul(53) + Voronoi::hash(gy)) as usize
+        let index = (((53 + Voronoi::hash(gx))
+            .wrapping_mul(53)
+            .wrapping_add(Voronoi::hash(gy))) as usize)
             % self.sites.len();
 
         // the coords in the sites vec are all relative to the square rather than being global coords
