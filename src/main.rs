@@ -30,16 +30,11 @@ fn main() {
     let mut image = RgbImage::new(size, size);
     let mut colors: HashMap<(i64, i64), Rgb<u8>> = HashMap::new();
 
-    // let x_off = 4.34;
-    // let y_off = 0.62;
-
     // Filling the Image
     for x in 0..size {
         for y in 0..size {
             let jitter_x: i64 = sim_x.sample([x as f64]).round() as i64;
             let jitter_y: i64 = sim_y.sample([y as f64]).round() as i64;
-
-            // println!("{}, {}", jitter_x, jitter_y);
 
             let site = vor.nearest_site(x as i64 + jitter_x, y as i64 + jitter_y);
             if colors.contains_key(&site) {
