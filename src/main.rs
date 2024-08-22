@@ -1,3 +1,4 @@
+mod map;
 mod voronoi;
 
 use std::{collections::HashMap, time::Instant};
