@@ -1,34 +1,36 @@
 mod voronoi;
 
-use std::collections::HashMap;
+use std::{collections::HashMap, time::Instant};
 
 use image::{Rgb, RgbImage};
 use libnoise::*;
-use rand::{rngs::StdRng, Rng, SeedableRng};
 use voronoi::Voronoi;
-
-fn yeah(seed: u64) -> [u8; 32] {
-    let bytes = seed.to_be_bytes();
-    let mut ret: [u8; 32] = [0; 32];
-    ret[..8].copy_from_slice(&bytes);
-    ret
-}
 
 fn main() {
     let seed = 3;
     let size = 2048;
-    let temp: [u8; 32] = [0; 32];
 
     // Noise and randomness
-    let sim_x = Source::simplex(seed & 171).fbm(8, 0.05, 2.0, 0.5).mul(4.5);
-    let sim_y = Source::simplex(seed & 73).fbm(8, 0.05, 2.0, 0.5).mul(4.5);
-    // let sim_color = Source::simplex(seed & 17).fbm(8, 0.05, 2.0, 0.5).mul(4.5);
+    let sim_x = Source::simplex(seed & 171)
+        .scale([0.5])
+        .fbm(8, 0.05, 2.0, 0.5)
+        .mul(4.5);
+    let sim_y = Source::simplex(seed & 73)
+        .scale([0.5])
+        .fbm(8, 0.05, 2.0, 0.5)
+        .mul(4.5);
+    let sim_color = Source::worley(seed & 17)
+        .scale([0.002, 0.002])
+        .fbm(4, 1.0, 2.0, 0.5)
+    //    .mul(4.5)
+    ;
     let vor = Voronoi::init(seed, 64);
-    let mut rng = StdRng::from_seed(temp);
 
     // Image generation stuff
     let mut image = RgbImage::new(size, size);
     let mut colors: HashMap<(i64, i64), Rgb<u8>> = HashMap::new();
+
+    let start = Instant::now();
 
     // Filling the Image
     for x in 0..size {
@@ -40,17 +42,30 @@ fn main() {
             if colors.contains_key(&site) {
                 image.put_pixel(x, y, *colors.get(&site).unwrap());
             } else {
-                let r: u8 = rng.gen();
-                let g: u8 = rng.gen();
-                let b: u8 = rng.gen();
+                let fort = sim_color.sample([site.0 as f64, site.1 as f64]);
 
-                let color = Rgb([r, g, b]);
+                let color;
+
+                if fort < 0.0 {
+                    color = Rgb([0, 255, 0]);
+                } else {
+                    color = Rgb([0, 0, 255]);
+                }
+
                 colors.insert(site, color);
                 image.put_pixel(x, y, color);
             }
         }
     }
 
+    let duration = start.elapsed();
+    println!("Elapsed time for algorithm: {:?}", duration);
+
     let _ = image.save("fuzzy.png");
+
+    Visualizer::<2>::new([2048, 2048], &sim_color)
+        .write_to_file("noise.png")
+        .unwrap();
+
     // vor.gen_image(String::from("image.png"), 1024);
 }
