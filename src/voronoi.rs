@@ -42,7 +42,7 @@ impl Voronoi {
         for cx in -2..=2 {
             for cy in -2..=2 {
                 let temp = self.site_at(gx + cx, gy + cy);
-                let dist = ((x - temp.0).pow(2) as f64 + (y - temp.1).pow(2) as f64).sqrt();
+                let dist = self.dist((x, y), temp, 3);
 
                 if dist < min_dist {
                     min_dist = dist;
@@ -80,6 +80,11 @@ impl Voronoi {
         }
 
         let _ = image.save(path);
+    }
+
+    fn dist(&self, point: (i64, i64), other: (i64, i64), exp: u32) -> f64 {
+        ((point.0 - other.0).abs().pow(exp) as f64 + (point.1 - other.1).abs().pow(exp) as f64)
+            .powf(1.0 / exp as f64)
     }
 
     /* Get the global coords of the site belonging to the square */
