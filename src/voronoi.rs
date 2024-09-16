@@ -6,10 +6,11 @@ use rand::{rngs::StdRng, seq::SliceRandom, Rng, SeedableRng};
 pub struct Voronoi {
     square_size: u32,
     sites: Vec<(u32, u32)>,
+    p: u32,
 }
 
 impl Voronoi {
-    pub fn init(seed: u64, square_size: u32) -> Self {
+    pub fn init(seed: u64, square_size: u32, p: u32) -> Self {
         let mut sites: Vec<(u32, u32)> = Vec::new();
         for x in 0..square_size {
             for y in 0..square_size {
@@ -27,7 +28,11 @@ impl Voronoi {
         let mut rng = StdRng::from_seed(_seed);
         sites.shuffle(&mut rng);
 
-        Voronoi { square_size, sites }
+        Voronoi {
+            square_size,
+            sites,
+            p,
+        }
     }
 
     /* Get the site nearest to the global position (x, y). This is the cell that the position belongs to. */
@@ -42,7 +47,7 @@ impl Voronoi {
         for cx in -2..=2 {
             for cy in -2..=2 {
                 let temp = self.site_at(gx + cx, gy + cy);
-                let dist = self.dist((x, y), temp, 3);
+                let dist = self.dist((x, y), temp);
 
                 if dist < min_dist {
                     min_dist = dist;
@@ -82,9 +87,10 @@ impl Voronoi {
         let _ = image.save(path);
     }
 
-    fn dist(&self, point: (i64, i64), other: (i64, i64), exp: u32) -> f64 {
-        ((point.0 - other.0).abs().pow(exp) as f64 + (point.1 - other.1).abs().pow(exp) as f64)
-            .powf(1.0 / exp as f64)
+    fn dist(&self, point: (i64, i64), other: (i64, i64)) -> f64 {
+        ((point.0 - other.0).abs().pow(self.p) as f64
+            + (point.1 - other.1).abs().pow(self.p) as f64)
+            .powf(1.0 / self.p as f64)
     }
 
     /* Get the global coords of the site belonging to the square */

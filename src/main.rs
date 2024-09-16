@@ -4,6 +4,7 @@ mod voronoi;
 
 use std::collections::HashMap;
 
+<<<<<<< HEAD
 use image::{GenericImage, Rgb, RgbImage};
 use libnoise::{Generator, Source, Visualizer};
 use map::Map;
@@ -23,10 +24,33 @@ fn main() {
 
     let fort = Source::simplex(0).scale([0.05, 0.05]).mul(4.0);
     let nite = Source::simplex(1).scale([0.05, 0.05]).mul(4.0);
+=======
+use image::{Rgb, RgbImage};
+use libnoise::*;
+use map::Map;
+use voronoi::Voronoi;
+
+fn main() {
+    let seed = 3;
+    let size = 1024;
+
+    let map = Map::init(seed, size);
+    map.gen_image(String::from("map.png"));
+
+    // let vor = Voronoi::init(seed, 64, 1);
+    // vor.gen_image(String::from("manhattan.png"), 1024);
+
+    // let vor2 = Voronoi::init(seed, 64, 2);
+    // vor2.gen_image(String::from("euclidian.png"), 1024);
+
+    // let vor3 = Voronoi::init(seed, 64, 3);
+    // vor3.gen_image(String::from("third.png"), 1024);
+>>>>>>> defab78 (keep pls)
 
     let mut image = RgbImage::new(512, 512);
     let mut colors: HashMap<(i64, i64), Rgb<u8>> = HashMap::new();
 
+<<<<<<< HEAD
     let blue = Rgb([0, 0, 255]);
     colors.insert((0, 0), blue);
     colors.insert((0, 1), blue);
@@ -80,4 +104,12 @@ fn main() {
     // .unwrap();
 
     let _ = image.save("squares.png");
+=======
+    // let duration = start.elapsed();
+    // println!("Elapsed time for algorithm: {:?}", duration);
+
+    // Visualizer::<2>::new([2048, 2048], &sim_color)
+    //     .write_to_file("noise.png")
+    //     .unwrap();
+>>>>>>> defab78 (keep pls)
 }
