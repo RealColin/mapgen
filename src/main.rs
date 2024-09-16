@@ -29,6 +29,25 @@ fn main() {
 
     let blue = Rgb([0, 0, 255]);
     colors.insert((0, 0), blue);
+    colors.insert((0, 1), blue);
+    colors.insert((0, 2), blue);
+    colors.insert((0, 3), blue);
+    colors.insert((1, 0), blue);
+    colors.insert((1, 1), blue);
+    colors.insert((1, 2), blue);
+    colors.insert((1, 3), blue);
+    colors.insert((1, 4), blue);
+    colors.insert((2, 0), blue);
+    colors.insert((2, 1), blue);
+    colors.insert((2, 2), blue);
+    colors.insert((2, 3), blue);
+    colors.insert((2, 4), blue);
+    colors.insert((3, 0), blue);
+    colors.insert((3, 1), blue);
+    colors.insert((3, 2), blue);
+    colors.insert((3, 3), blue);
+    colors.insert((3, 4), blue);
+    colors.insert((3, 5), blue);
 
     let seed: [u8; 32] = [0; 32];
     let mut rng = StdRng::from_seed(seed);
