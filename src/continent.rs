@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 pub struct ContinentSettings {
     scale: u32,
 }
@@ -9,16 +8,6 @@ impl ContinentSettings {
     }
 }
 
-pub struct Continent {
-    center: (i64, i64),
-}
-
-impl Continent {
-    pub fn init() -> Self {
-        Continent { center: (0, 0) }
-    }
-}
-=======
 use image::Rgb;
 
 pub struct Continent {
@@ -64,4 +53,3 @@ impl Continent {
 
 // anything x or y = 0-43 and 85-128 is blue
 // for x = 44, anything other than y=64 is blue
->>>>>>> defab78 (keep pls)
