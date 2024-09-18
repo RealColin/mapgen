@@ -11,7 +11,7 @@ use rand::{rngs::StdRng, seq::SliceRandom, Rng, SeedableRng};
 use voronoi::Voronoi;
 
 fn main() {
-    let vor = Voronoi::init(0, 16, 2);
+    let vor = Voronoi::init(3, 16, 2);
     let template = image::open("map.png").unwrap();
 
     let mut image = RgbaImage::new(2048, 2048);
@@ -19,12 +19,12 @@ fn main() {
 
     let fort = Source::perlin(0)
         .scale([0.05, 0.05])
-        .fbm(8, 2.0, 2.0, 0.125)
-        .mul(8.0);
+        .fbm(8, 2.0, 2.0, 0.5)
+        .mul(4.0);
     let nite = Source::perlin(1)
         .scale([0.05, 0.05])
-        .fbm(8, 2.0, 2.0, 0.125)
-        .mul(8.0);
+        .fbm(8, 2.0, 2.0, 0.5)
+        .mul(4.0);
 
     // Visualizer::<2>::new([2048, 2048], &fort)
     //     .write_to_file("fort.png")
@@ -55,14 +55,18 @@ fn main() {
         for xo in -2..=2 {
             for yo in -2..=2 {
                 let color;
-                if cache.contains_key(&(x as i64, y as i64)) {
-                    color = *cache.get(&(x as i64, y as i64)).unwrap();
+                if cache.contains_key(&(x as i64 + xo as i64, y as i64 + yo as i64)) {
+                    color = *cache
+                        .get(&(x as i64 + xo as i64, y as i64 + yo as i64))
+                        .unwrap();
                 } else {
                     color = get_base_color(x + xo as f64, y + yo as f64);
-                    cache.insert((x as i64, y as i64), color);
+                    cache.insert((x as i64 + xo as i64, y as i64 + yo as i64), color);
                 }
 
-                counts.insert(color, *counts.get(&color).unwrap_or(&0) + 1);
+                let count = *counts.get(&color).unwrap_or(&0);
+
+                counts.insert(color, count + 1);
             }
         }
 
@@ -80,6 +84,8 @@ fn main() {
                 }
             }
         }
+
+        // println!("{x}, {y}, {}, {}, {}", ret[0], ret[1], ret[2]);
 
         ret
     };
