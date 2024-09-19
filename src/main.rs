@@ -17,107 +17,113 @@ fn main() {
     let mut image = RgbaImage::new(2048, 2048);
     let mut colors: HashMap<(i64, i64), Rgba<u8>> = HashMap::new();
 
-    let fort = Source::perlin(0)
-        .scale([0.05, 0.05])
-        .fbm(8, 2.0, 2.0, 0.5)
-        .mul(4.0);
+    let fort = Source::worley(0)
+        .scale([0.005, 0.005])
+        .fbm(1, 1.0, 1.0, 1.0)
+        .mul(1.0);
     let nite = Source::perlin(1)
         .scale([0.05, 0.05])
-        .fbm(8, 2.0, 2.0, 0.5)
-        .mul(4.0);
+        .fbm(8, 1.0, 2.0, 0.25)
+        .mul(16.0);
 
-    // Visualizer::<2>::new([2048, 2048], &fort)
-    //     .write_to_file("fort.png")
-    //     .unwrap();
+    Visualizer::<2>::new([2048, 2048], &fort)
+        .write_to_file("fort.png")
+        .unwrap();
 
-    let mut get_base_color = |x: f64, y: f64| {
-        let ox = fort.sample([x + 0.01, y + 0.01]);
-        let oy = nite.sample([x + 0.01, y + 0.01]);
+    // let mut get_base_color = |x: f64, y: f64| {
+    //     let ox = fort.sample([x + 0.01, y + 0.01]);
+    //     let oy = nite.sample([x + 0.01, y + 0.01]);
 
-        let site = vor.nearest_site((x + ox) as i64, (y + oy) as i64);
-        if colors.contains_key(&site) {
-            let color = *colors.get(&site).unwrap();
-            return color;
-        } else {
-            let site_box = ((site.0 / 16).clamp(0, 127), (site.1 / 16).clamp(0, 127));
-            let color = template.get_pixel(site_box.0 as u32, site_box.1 as u32);
+    //     let color = template.get_pixel(
+    //         ((x + ox) as u32 / 16).clamp(0, 127),
+    //         ((y + oy) as u32 / 16).clamp(0, 127),
+    //     );
+    //     return color;
 
-            colors.insert(site, color);
-            return color;
-        }
-    };
+    //     // let site = vor.nearest_site((x + ox) as i64, (y + oy) as i64);
+    //     // if colors.contains_key(&site) {
+    //     //     let color = *colors.get(&site).unwrap();
+    //     //     return color;
+    //     // } else {
+    //     //     let site_box = ((site.0 / 16).clamp(0, 127), (site.1 / 16).clamp(0, 127));
+    //     //     let color = template.get_pixel(site_box.0 as u32, site_box.1 as u32);
 
-    let mut cache: HashMap<(i64, i64), Rgba<u8>> = HashMap::new();
+    //     //     colors.insert(site, color);
+    //     //     return color;
+    //     // }
+    // };
 
-    let mut get_color = |x: f64, y: f64| {
-        let mut counts: HashMap<Rgba<u8>, u8> = HashMap::new();
+    // let mut cache: HashMap<(i64, i64), Rgba<u8>> = HashMap::new();
 
-        for xo in -2..=2 {
-            for yo in -2..=2 {
-                let color;
-                if cache.contains_key(&(x as i64 + xo as i64, y as i64 + yo as i64)) {
-                    color = *cache
-                        .get(&(x as i64 + xo as i64, y as i64 + yo as i64))
-                        .unwrap();
-                } else {
-                    color = get_base_color(x + xo as f64, y + yo as f64);
-                    cache.insert((x as i64 + xo as i64, y as i64 + yo as i64), color);
-                }
+    // let mut get_color = |x: f64, y: f64| {
+    //     let mut counts: HashMap<Rgba<u8>, u8> = HashMap::new();
 
-                let count = *counts.get(&color).unwrap_or(&0);
+    //     for xo in -4..=4 {
+    //         for yo in -4..=4 {
+    //             let color;
+    //             if cache.contains_key(&(x as i64 + xo as i64, y as i64 + yo as i64)) {
+    //                 color = *cache
+    //                     .get(&(x as i64 + xo as i64, y as i64 + yo as i64))
+    //                     .unwrap();
+    //             } else {
+    //                 color = get_base_color(x + xo as f64, y + yo as f64);
+    //                 cache.insert((x as i64 + xo as i64, y as i64 + yo as i64), color);
+    //             }
 
-                counts.insert(color, count + 1);
-            }
-        }
+    //             let count = *counts.get(&color).unwrap_or(&0);
 
-        let mut highest = 0;
-        let mut ret = Rgba([0, 0, 0, 0]);
+    //             counts.insert(color, count + 1);
+    //         }
+    //     }
 
-        for color in counts {
-            if highest < color.1 {
-                highest = color.1;
-                ret = color.0;
-            } else if highest == color.1 {
-                let base = get_base_color(x, y);
-                if base == color.0 {
-                    ret = color.0;
-                }
-            }
-        }
+    //     let mut highest = 0;
+    //     let mut ret = Rgba([0, 0, 0, 0]);
 
-        // println!("{x}, {y}, {}, {}, {}", ret[0], ret[1], ret[2]);
+    //     for color in counts {
+    //         if highest < color.1 {
+    //             highest = color.1;
+    //             ret = color.0;
+    //         } else if highest == color.1 {
+    //             let base = get_base_color(x, y);
+    //             if base == color.0 {
+    //                 ret = color.0;
+    //             }
+    //         }
+    //     }
 
-        ret
-    };
+    //     // println!("{x}, {y}, {}, {}, {}", ret[0], ret[1], ret[2]);
 
-    for x in 0..2048 {
-        for y in 0..2048 {
-            let color = get_color(x as f64, y as f64);
+    //     ret
+    // };
 
-            image.put_pixel(x, y, color);
+    // for x in 0..2048 {
+    //     for y in 0..2048 {
+    //         let color = get_color(x as f64, y as f64);
 
-            // let ox = fort.sample([x as f64 + 0.01, y as f64 + 0.01]);
-            // let oy = nite.sample([x as f64 + 0.01, y as f64 + 0.01]);
+    //         image.put_pixel(x, y, color);
 
-            // let site = vor.nearest_site((x as f64 + ox) as i64, (y as f64 + oy) as i64);
-            // if colors.contains_key(&site) {
-            //     let color = colors.get(&site).unwrap();
-            //     image.put_pixel(x as u32, y as u32, *color);
-            // } else {
-            //     let site_box = (site.0 / 16, site.1 / 16);
-            //     let color;
+    //         // let ox = fort.sample([x as f64 + 0.01, y as f64 + 0.01]);
+    //         // let oy = nite.sample([x as f64 + 0.01, y as f64 + 0.01]);
 
-            //     if site_box.0 > 127 || site_box.1 > 127 || site_box.0 < 0 || site_box.1 < 0 {
-            //         color = Rgba([0, 255, 0, 255]);
-            //     } else {
-            //         color = template.get_pixel(site_box.0 as u32, site_box.1 as u32);
-            //     }
+    //         // let site = vor.nearest_site((x as f64 + ox) as i64, (y as f64 + oy) as i64);
+    //         // if colors.contains_key(&site) {
+    //         //     let color = colors.get(&site).unwrap();
+    //         //     image.put_pixel(x as u32, y as u32, *color);
+    //         // } else {
+    //         //     let site_box = (site.0 / 16, site.1 / 16);
+    //         //     let color;
 
-            //     colors.insert(site, color);
-            //     image.put_pixel(x as u32, y as u32, color);
-            // }
-        }
-    }
+    //         //     if site_box.0 > 127 || site_box.1 > 127 || site_box.0 < 0 || site_box.1 < 0 {
+    //         //         color = Rgba([0, 255, 0, 255]);
+    //         //     } else {
+    //         //         color = template.get_pixel(site_box.0 as u32, site_box.1 as u32);
+    //         //     }
 
-    let _ = image.save("vorsq.png");
+    //         //     colors.insert(site, color);
+    //         //     image.put_pixel(x as u32, y as u32, color);
+    //         // }
+    //     }
+    // }
+
+    // let _ = image.save("vorsq.png");
 }
