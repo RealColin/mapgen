@@ -11,6 +11,8 @@ use rand::{rngs::StdRng, seq::SliceRandom, Rng, SeedableRng};
 use voronoi::Voronoi;
 
 fn main() {
+    // TEST
+
     let input = image::open("input.png").unwrap();
 
     let scale_factor = 4;
