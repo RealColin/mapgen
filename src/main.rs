@@ -23,10 +23,13 @@ fn main() {
 
     let mut base_colors: HashMap<(u32, u32), Rgba<u8>> = HashMap::new();
 
-    let mut get_base_color = |x: u32, y: u32| {
-        if x >= width || y >= width {
-            return Rgba([0, 0, 0, 255]);
-        }
+    let mut get_base_color = |mut x: u32, mut y: u32| {
+        x = x.clamp(0, width - 1);
+        y = y.clamp(0, height - 1);
+
+        // if x >= width || y >= width {
+        //     return Rgba([0, 0, 0, 255]);
+        // }
 
         if base_colors.contains_key(&(x, y)) {
             return *base_colors.get(&(x, y)).unwrap();
@@ -58,7 +61,7 @@ fn main() {
                     return up;
                 }
             }
-        } else if px >= 2 && py >= 2 {
+        } else if px == 3 && py == 3 {
             let right = get_base_color((x + (3 - px)) + 1, y);
             let down = get_base_color(x, (y + (3 - py)) + 1);
 
