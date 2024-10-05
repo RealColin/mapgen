@@ -11,11 +11,9 @@ use rand::{rngs::StdRng, seq::SliceRandom, Rng, SeedableRng};
 use voronoi::Voronoi;
 
 fn main() {
-    // TEST
-
     let input = image::open("input.png").unwrap();
 
-    let scale_factor = 4;
+    let scale_factor = 16;
     let width = input.dimensions().0 * scale_factor;
     let height = input.dimensions().1 * scale_factor;
 
@@ -26,10 +24,6 @@ fn main() {
     let mut get_base_color = |mut x: u32, mut y: u32| {
         x = x.clamp(0, width - 1);
         y = y.clamp(0, height - 1);
-
-        // if x >= width || y >= width {
-        //     return Rgba([0, 0, 0, 255]);
-        // }
 
         if base_colors.contains_key(&(x, y)) {
             return *base_colors.get(&(x, y)).unwrap();
@@ -43,42 +37,57 @@ fn main() {
     let mut get_color = |x: u32, y: u32| {
         let px = x % scale_factor;
         let py = y % scale_factor;
+        let half = scale_factor / 2;
 
         let base = get_base_color(x, y);
 
-        if px <= 1 && py <= 1 {
+        if px < half && py < half {
             let left = get_base_color((x - px) - 1, y);
             let up = get_base_color(x, (y - py) - 1);
 
-            if left != base && up != base {
-                if px == 1 && py == 1 {
-                    return base;
-                }
-
-                if px == 0 {
-                    return left;
-                } else {
+            if left != base && up != base && px + py < half {
+                if px > py {
                     return up;
+                } else {
+                    return left;
                 }
             }
-        } else if px == 3 && py == 3 {
-            let right = get_base_color((x + (3 - px)) + 1, y);
-            let down = get_base_color(x, (y + (3 - py)) + 1);
+        } else if px >= half && py < half {
+            let right = get_base_color((x + ((scale_factor - 1) - px)) + 1, y);
+            let up = get_base_color(x, (y - py) - 1);
 
-            if right != base && down != base {
-                if px == 2 && py == 2 {
-                    return base;
-                }
-
-                if px == 3 {
-                    return right;
+            if right != base && up != base && px + py >= half + (py * 2) {
+                if (scale_factor - 1) - px > py {
+                    return up;
                 } else {
+                    return right;
+                }
+            }
+        } else if px > half && py > half {
+            let right = get_base_color((x + ((scale_factor - 1) - px)) + 1, y);
+            let down = get_base_color(x, (y + ((scale_factor - 1) - py)) + 1);
+
+            if right != base && down != base && px + py >= half * 3 {
+                if px > py {
                     return down;
+                } else {
+                    return right;
+                }
+            }
+        } else if px < half && py > half {
+            let left = get_base_color((x - px) - 1, y);
+            let down = get_base_color(x, (y + ((scale_factor - 1) - py)) + 1);
+
+            if left != base && down != base && px + py > half + (px * 2) {
+                if px > (scale_factor - 1) - py {
+                    return down;
+                } else {
+                    return left;
                 }
             }
         }
 
-        return get_base_color(x, y);
+        return base;
     };
 
     for x in 0..width {
