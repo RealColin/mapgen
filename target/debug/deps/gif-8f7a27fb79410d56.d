@@ -1,0 +1,12 @@
+/home/colin/Documents/Projects/mapgen/target/debug/deps/libgif-8f7a27fb79410d56.rmeta: /home/colin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gif-0.13.1/src/lib.rs /home/colin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gif-0.13.1/src/traits.rs /home/colin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gif-0.13.1/src/common.rs /home/colin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gif-0.13.1/src/reader/mod.rs /home/colin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gif-0.13.1/src/reader/decoder.rs /home/colin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gif-0.13.1/src/reader/converter.rs /home/colin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gif-0.13.1/src/encoder.rs /home/colin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gif-0.13.1/src/../README.md
+
+/home/colin/Documents/Projects/mapgen/target/debug/deps/gif-8f7a27fb79410d56.d: /home/colin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gif-0.13.1/src/lib.rs /home/colin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gif-0.13.1/src/traits.rs /home/colin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gif-0.13.1/src/common.rs /home/colin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gif-0.13.1/src/reader/mod.rs /home/colin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gif-0.13.1/src/reader/decoder.rs /home/colin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gif-0.13.1/src/reader/converter.rs /home/colin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gif-0.13.1/src/encoder.rs /home/colin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gif-0.13.1/src/../README.md
+
+/home/colin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gif-0.13.1/src/lib.rs:
+/home/colin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gif-0.13.1/src/traits.rs:
+/home/colin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gif-0.13.1/src/common.rs:
+/home/colin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gif-0.13.1/src/reader/mod.rs:
+/home/colin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gif-0.13.1/src/reader/decoder.rs:
+/home/colin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gif-0.13.1/src/reader/converter.rs:
+/home/colin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gif-0.13.1/src/encoder.rs:
+/home/colin/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gif-0.13.1/src/../README.md:

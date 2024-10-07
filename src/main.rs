@@ -2,13 +2,9 @@ mod continent;
 mod map;
 mod voronoi;
 
-use std::{collections::HashMap, str::FromStr};
+use std::collections::HashMap;
 
-use image::{DynamicImage, GenericImage, GenericImageView, Rgb, RgbImage, Rgba, RgbaImage};
-use libnoise::{Generator, Source, Visualizer};
-use map::Map;
-use rand::{rngs::StdRng, seq::SliceRandom, Rng, SeedableRng};
-use voronoi::Voronoi;
+use image::{GenericImageView, Rgba, RgbaImage};
 
 fn main() {
     let input = image::open("input.png").unwrap();
@@ -40,53 +36,71 @@ fn main() {
         let half = scale_factor / 2;
 
         let base = get_base_color(x, y);
+        let left = get_base_color((x - px) - 1, y);
+        let right = get_base_color((x + ((scale_factor - 1) - px)) + 1, y);
+        let up = get_base_color(x, (y - py) - 1);
+        let down = get_base_color(x, (y + ((scale_factor - 1) - py)) + 1);
 
-        if px < half && py < half {
-            let left = get_base_color((x - px) - 1, y);
-            let up = get_base_color(x, (y - py) - 1);
+        if px < half && left != base {
+            if py < half && up != base {
+                if px + py < half {
+                    if left == up {
+                        return left;
+                    } else {
+                        let corner = get_base_color((x - px) - 1, (y - py) - 1);
 
-            if left != base && up != base && px + py < half {
-                if px > py {
-                    return up;
-                } else {
-                    return left;
+                        if corner == left || corner == up {
+                            return corner;
+                        }
+                    }
                 }
-            }
-        } else if px >= half && py < half {
-            let right = get_base_color((x + ((scale_factor - 1) - px)) + 1, y);
-            let up = get_base_color(x, (y - py) - 1);
+            } else if py > half && down != base {
+                if px + py > half + (px * 2) {
+                    if left == down {
+                        return left;
+                    } else {
+                        let corner =
+                            get_base_color((x - px) - 1, (y + ((scale_factor - 1) - py)) + 1);
 
-            if right != base && up != base && px + py >= half + (py * 2) {
-                if (scale_factor - 1) - px > py {
-                    return up;
-                } else {
-                    return right;
-                }
-            }
-        } else if px > half && py > half {
-            let right = get_base_color((x + ((scale_factor - 1) - px)) + 1, y);
-            let down = get_base_color(x, (y + ((scale_factor - 1) - py)) + 1);
-
-            if right != base && down != base && px + py >= half * 3 {
-                if px > py {
-                    return down;
-                } else {
-                    return right;
-                }
-            }
-        } else if px < half && py > half {
-            let left = get_base_color((x - px) - 1, y);
-            let down = get_base_color(x, (y + ((scale_factor - 1) - py)) + 1);
-
-            if left != base && down != base && px + py > half + (px * 2) {
-                if px > (scale_factor - 1) - py {
-                    return down;
-                } else {
-                    return left;
+                        if corner == left || corner == down {
+                            return corner;
+                        }
+                    }
                 }
             }
         }
 
+        if px >= half && right != base {
+            if py < half && up != base {
+                if px + py >= half + (py * 2) {
+                    if right == up {
+                        return right;
+                    } else {
+                        let corner =
+                            get_base_color((x + ((scale_factor - 1) - px)) + 1, (y - py) - 1);
+
+                        if corner == right || corner == up {
+                            return corner;
+                        }
+                    }
+                }
+            } else if py > half && down != base {
+                if px + py >= half * 3 {
+                    if right == down {
+                        return right;
+                    } else {
+                        let corner = get_base_color(
+                            (x + ((scale_factor - 1) - px)) + 1,
+                            (y + ((scale_factor - 1) - py)) + 1,
+                        );
+
+                        if corner == right || corner == down {
+                            return corner;
+                        }
+                    }
+                }
+            }
+        }
         return base;
     };
 
